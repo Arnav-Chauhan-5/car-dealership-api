@@ -58,3 +58,20 @@ Implemented bcrypt password hashing, JWT creation, and Prisma queries for regist
 
 **Result:**
 Antigravity updated the Prisma schema with a Car model, ran the database migration, and scaffolded `car.routes.ts` with 501 stubs. A new test suite was created in `car.test.ts` covering CRUD operations and JWT protection. Ran `npm test` and confirmed the new inventory tests fail, successfully establishing the Red Phase.
+
+## Interaction 4: Inventory API Implementation (Green Phase)
+
+**Prompt:**
+> Let's move on to the TDD Green Phase for the Cars API. 
+> 
+> Please implement the complete CRUD logic in `src/routes/car.routes.ts` (or your dedicated controller) using Prisma:
+> 1. `GET /api/cars`: Fetch and return all cars from the database.
+> 2. `GET /api/cars/:id`: Fetch a single car by its ID. Return 404 if it does not exist.
+> 3. `POST /api/cars`: Validate required fields (e.g., make, model, year, price), then create a new car in the database. Return 201 on success.
+> 4. `PUT /api/cars/:id`: Update an existing car by ID. Return 404 if it does not exist.
+> 5. `DELETE /api/cars/:id`: Delete a car by ID. Return 404 if it does not exist.
+> 6. Ensure proper error handling (e.g., trying to parse an invalid ID string into an integer).
+> 7. Run `npm test` to verify that all 16 tests in the suite now pass.
+
+**Result:**
+Antigravity successfully implemented the Prisma CRUD operations for the inventory endpoints. Added validation and 404 error handling for invalid IDs. Executed `npm test` and verified all 16 tests in the suite are now passing (Green Phase completed).
