@@ -37,3 +37,24 @@ Antigravity scaffolded the project, set up Express, TypeScript, Prisma (SQLite),
 
 **Result:**
 Implemented bcrypt password hashing, JWT creation, and Prisma queries for register and login endpoints. Executed `npm test` and verified all 6 tests passed (Green Phase completed).
+
+## Interaction 3: Inventory API Setup & Tests (Red Phase)
+
+**Prompt:**
+> Let's move on to the Inventory management feature. We will start with the TDD Red Phase for the cars API.
+> 
+> Please complete the following sequence:
+> 1. Update `prisma/schema.prisma` to include a `Car` model with appropriate fields for a dealership (id, make, model, year, price, mileage, status, and timestamps).
+> 2. Generate and run a new Prisma migration for this table.
+> 3. Create a new file `src/routes/car.routes.ts` with stubbed endpoints (all returning 501 Not Implemented) for:
+>    - `GET /api/cars` (List all cars)
+>    - `GET /api/cars/:id` (Get single car details)
+>    - `POST /api/cars` (Add a new car - MUST be protected by JWT auth)
+>    - `PUT /api/cars/:id` (Update a car - MUST be protected by JWT auth)
+>    - `DELETE /api/cars/:id` (Delete a car - MUST be protected by JWT auth)
+> 4. Mount the new car routes in `src/app.ts`.
+> 5. Create `src/tests/car.test.ts` using Supertest to test these 5 endpoints. The tests for POST, PUT, and DELETE must test for authentication failures (401) when no token is provided, and proceed to the 501 stub response when a valid token is provided.
+> 6. Run `npm test` to verify that the new car tests fail (Red Phase).
+
+**Result:**
+Antigravity updated the Prisma schema with a Car model, ran the database migration, and scaffolded `car.routes.ts` with 501 stubs. A new test suite was created in `car.test.ts` covering CRUD operations and JWT protection. Ran `npm test` and confirmed the new inventory tests fail, successfully establishing the Red Phase.

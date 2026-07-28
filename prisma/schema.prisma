@@ -13,3 +13,15 @@ model User {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 }
+
+model Car {
+  id        Int      @id @default(autoincrement())
+  make      String
+  model     String
+  year      Int
+  price     Float
+  mileage   Int
+  status    String   @default("available")
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
