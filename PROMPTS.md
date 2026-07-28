@@ -104,3 +104,31 @@ Antigravity initialized a Vite + React + TypeScript frontend in the `client/` di
 
 **Result:**
 Antigravity successfully integrated Material-UI. The app is now wrapped in a custom dark theme `ThemeProvider` utilizing a purple/teal palette. `LoginPage.tsx` was refactored with a centered, professional card layout, complete with loading spinners and error alerts. `InventoryPage.tsx` was upgraded to feature an `AppBar` with a gradient title, a responsive `Grid` of car cards, hover lift effects, and colored `Chip` components indicating vehicle status. Build and tests remain fully successful.
+
+## Interaction 7: Frontend CRUD Operations and Modal Forms
+
+**Prompt:**
+> The MUI styling looks excellent. Now we need to implement frontend CRUD operations so users can manage the inventory. Please complete the following steps:
+> 1. Create a new component `client/src/components/CarFormModal.tsx`. Use MUI's `Dialog`, `DialogTitle`, `DialogContent`, and `DialogActions` to build a form for adding or editing a car. Include `TextField` inputs for Make, Model, Year, Price, Mileage, and a `Select` dropdown for Status.
+> 2. In `InventoryPage.tsx`, add a Material-UI `Fab` (Floating Action Button) fixed to the bottom-right corner to trigger the "Add Car" modal.
+> 3. Update the existing car `Card` components in the `Grid` to include an "Edit" icon button and a "Delete" icon button.
+> 4. Wire up the state in `InventoryPage.tsx` to handle opening/closing the `CarFormModal` for both creation and editing, ensuring the form pre-fills with data when editing.
+> 5. Connect the form submissions and the delete button to the respective endpoints via our `services/api.ts` fetch wrapper, and ensure the inventory list auto-refreshes upon a successful mutation.
+
+**Result:**
+Antigravity successfully implemented full frontend CRUD capabilities. Created a reusable `CarFormModal.tsx` using MUI Dialog for adding and editing cars, complete with form validation. Updated `InventoryPage.tsx` with a Floating Action Button (FAB) for creation, and Edit/Delete icon actions on individual cards. Wired all UI actions to the `carsApi` service, implemented automatic list refreshing, and added Snackbar notifications for user feedback. Build and tests remain fully green.
+
+## Interaction 8: Frontend Testing Suite (Vitest & React Testing Library)
+
+**Prompt:**
+> To ensure we meet our strict TDD requirements, we need to implement a testing suite for our React client. Please complete the following steps:
+> 1. Install `vitest`, `jsdom`, `@testing-library/react`, `@testing-library/jest-dom`, and `@testing-library/user-event` as dev dependencies in the `client` directory.
+> 2. Update `vite.config.ts` to include the Vitest configuration, setting the environment to `jsdom` and adding a setup file.
+> 3. Create a `client/src/setupTests.ts` file that imports `@testing-library/jest-dom`.
+> 4. Add a `"test": "vitest run"` script to the `client/package.json`.
+> 5. Write a test file for the frontend auth flow (`client/src/pages/LoginPage.test.tsx`) that verifies the form renders, accepts input, and triggers the API call on submit. Mock the `services/api.ts` fetch wrapper for these tests.
+> 6. Write a test file for the UI components (`client/src/components/CarFormModal.test.tsx`) ensuring the modal opens and displays the correct fields for both Add and Edit modes.
+> 7. Run the tests and ensure they pass.
+
+**Result:**
+[Pending Antigravity Execution]
