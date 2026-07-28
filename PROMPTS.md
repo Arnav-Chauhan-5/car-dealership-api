@@ -131,4 +131,17 @@ Antigravity successfully implemented full frontend CRUD capabilities. Created a 
 > 7. Run the tests and ensure they pass.
 
 **Result:**
+Antigravity successfully configured Vitest and React Testing Library. Implemented `LoginPage.test.tsx` (8 tests validating rendering, toggling, and API calls) and `CarFormModal.test.tsx` (9 tests validating add/edit modes and form state). The project now boasts 17/17 passing frontend tests and 15/15 passing backend tests.
+
+## Interaction 9: Frontend Search and Filtering
+
+**Prompt:**
+> Let's add Search and Filtering capabilities to our dashboard to improve the user experience. Please complete the following steps:
+> 1. In `InventoryPage.tsx`, add a control bar directly above the car `Grid`. Use MUI's `Box` or `Stack` to layout a search `TextField` (with a magnifying glass `SearchIcon` in the `InputAdornment`) and a `Select` dropdown for filtering by Status (All, Available, Sold, Pending).
+> 2. Create React state variables for `searchTerm` (string) and `statusFilter` (string, default "All").
+> 3. Create a derived `filteredCars` variable that filters the main `cars` array. It should check if the `make` or `model` includes the `searchTerm` (case-insensitive) AND if the status matches the `statusFilter` (unless "All" is selected).
+> 4. Update the inventory `Grid` to map over `filteredCars` instead of the raw `cars` array. Handle the empty state (e.g., displaying "No cars found" if the filter results in zero matches).
+> 5. To maintain our strict TDD standards, create a new test file `client/src/pages/InventoryPage.test.tsx` (or update it if it exists). Write tests to verify that typing in the search bar and changing the status dropdown correctly filters the displayed car cards on the screen.
+
+**Result:**
 [Pending Antigravity Execution]

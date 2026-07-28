@@ -1,4 +1,4 @@
-import { useEffect, useState, useCallback } from 'react';
+import { useEffect, useState, useCallback, useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
 import {
   AppBar,
@@ -16,6 +16,9 @@ import {
   Fab,
   Snackbar,
   Alert,
+  TextField,
+  MenuItem,
+  InputAdornment,
 } from '@mui/material';
 import Grid from '@mui/material/Grid';
 import LogoutIcon from '@mui/icons-material/Logout';
@@ -26,13 +29,26 @@ import NoCrashIcon from '@mui/icons-material/NoCrash';
 import AddIcon from '@mui/icons-material/Add';
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
+import SearchIcon from '@mui/icons-material/Search';
+import FilterListIcon from '@mui/icons-material/FilterList';
 import { carsApi, type Car } from '../services/api';
 import CarFormModal from '../components/CarFormModal';
+
+const STATUS_FILTER_OPTIONS = [
+  { value: 'All', label: 'All Statuses' },
+  { value: 'available', label: 'Available' },
+  { value: 'pending', label: 'Pending' },
+  { value: 'sold', label: 'Sold' },
+];
 
 function InventoryPage() {
   const navigate = useNavigate();
   const [cars, setCars] = useState<Car[]>([]);
   const [loading, setLoading] = useState(true);
+
+  // Search & filter state
+  const [searchTerm, setSearchTerm] = useState('');
+  const [statusFilter, setStatusFilter] = useState('All');
 
   // Modal state
   const [modalOpen, setModalOpen] = useState(false);
@@ -44,6 +60,20 @@ function InventoryPage() {
     message: '',
     severity: 'success',
   });
+
+  // Derived filtered cars
+  const filteredCars = useMemo(() => {
+    return cars.filter((car) => {
+      const term = searchTerm.toLowerCase();
+      const matchesSearch =
+        !term ||
+        car.make.toLowerCase().includes(term) ||
+        car.model.toLowerCase().includes(term);
+      const matchesStatus =
+        statusFilter === 'All' || car.status === statusFilter;
+      return matchesSearch && matchesStatus;
+    });
+  }, [cars, searchTerm, statusFilter]);
 
   const fetchCars = useCallback(() => {
     setLoading(true);
@@ -173,7 +203,7 @@ function InventoryPage() {
             <CircularProgress color="primary" />
           </Box>
         ) : cars.length === 0 ? (
-          /* Empty State */
+          /* Empty State — no cars at all */
           <Box sx={{ textAlign: 'center', mt: 10 }}>
             <NoCrashIcon sx={{ fontSize: 72, color: 'text.secondary', mb: 2, opacity: 0.5 }} />
             <Typography variant="h5" gutterBottom>
@@ -184,96 +214,163 @@ function InventoryPage() {
             </Typography>
           </Box>
         ) : (
-          /* Car Grid */
-          <Grid container spacing={3}>
-            {cars.map((car) => (
-              <Grid key={car.id} size={{ xs: 12, sm: 6, md: 4 }}>
-                <Card
-                  elevation={0}
-                  sx={{
-                    height: '100%',
-                    display: 'flex',
-                    flexDirection: 'column',
-                    transition: 'all 0.2s ease',
-                    '&:hover': {
-                      borderColor: 'primary.main',
-                      boxShadow: '0 4px 24px rgba(108, 99, 255, 0.15)',
-                      transform: 'translateY(-2px)',
-                    },
-                  }}
-                >
-                  <CardContent sx={{ p: 3, flex: 1 }}>
-                    {/* Header */}
-                    <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', mb: 2 }}>
-                      <Typography variant="h6" sx={{ fontSize: '1.1rem', lineHeight: 1.3 }}>
-                        {car.year} {car.make}
-                        <br />
-                        <Typography component="span" variant="body2" color="text.secondary">
-                          {car.model}
-                        </Typography>
-                      </Typography>
-                      {getStatusChip(car.status)}
-                    </Box>
+          <>
+            {/* Search & Filter Control Bar */}
+            <Box
+              sx={{
+                display: 'flex',
+                gap: 2,
+                mb: 3,
+                flexDirection: { xs: 'column', sm: 'row' },
+                alignItems: { sm: 'center' },
+              }}
+            >
+              <TextField
+                placeholder="Search by make or model..."
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
+                size="small"
+                sx={{ flex: 1, minWidth: 200 }}
+                slotProps={{
+                  input: {
+                    startAdornment: (
+                      <InputAdornment position="start">
+                        <SearchIcon sx={{ color: 'text.secondary', fontSize: 20 }} />
+                      </InputAdornment>
+                    ),
+                  },
+                }}
+                inputProps={{ 'aria-label': 'Search cars' }}
+              />
 
-                    {/* Details */}
-                    <Box sx={{ display: 'flex', gap: 3, mt: 2 }}>
-                      <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.75 }}>
-                        <LocalOfferIcon sx={{ fontSize: 18, color: 'secondary.main' }} />
-                        <Box>
-                          <Typography variant="caption" color="text.secondary" sx={{ display: 'block', lineHeight: 1 }}>
-                            Price
+              <TextField
+                select
+                value={statusFilter}
+                onChange={(e) => setStatusFilter(e.target.value)}
+                size="small"
+                sx={{ minWidth: 180 }}
+                label="Status"
+                slotProps={{
+                  input: {
+                    startAdornment: (
+                      <InputAdornment position="start">
+                        <FilterListIcon sx={{ color: 'text.secondary', fontSize: 20 }} />
+                      </InputAdornment>
+                    ),
+                  },
+                }}
+              >
+                {STATUS_FILTER_OPTIONS.map((opt) => (
+                  <MenuItem key={opt.value} value={opt.value}>
+                    {opt.label}
+                  </MenuItem>
+                ))}
+              </TextField>
+            </Box>
+
+            {/* Car Grid or No-Matches State */}
+            {filteredCars.length === 0 ? (
+              <Box sx={{ textAlign: 'center', mt: 8 }}>
+                <SearchIcon sx={{ fontSize: 56, color: 'text.secondary', mb: 2, opacity: 0.4 }} />
+                <Typography variant="h6" gutterBottom>
+                  No cars found
+                </Typography>
+                <Typography variant="body2" color="text.secondary">
+                  Try adjusting your search or filter criteria.
+                </Typography>
+              </Box>
+            ) : (
+              <Grid container spacing={3}>
+                {filteredCars.map((car) => (
+                  <Grid key={car.id} size={{ xs: 12, sm: 6, md: 4 }}>
+                    <Card
+                      elevation={0}
+                      sx={{
+                        height: '100%',
+                        display: 'flex',
+                        flexDirection: 'column',
+                        transition: 'all 0.2s ease',
+                        '&:hover': {
+                          borderColor: 'primary.main',
+                          boxShadow: '0 4px 24px rgba(108, 99, 255, 0.15)',
+                          transform: 'translateY(-2px)',
+                        },
+                      }}
+                    >
+                      <CardContent sx={{ p: 3, flex: 1 }}>
+                        {/* Header */}
+                        <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', mb: 2 }}>
+                          <Typography variant="h6" sx={{ fontSize: '1.1rem', lineHeight: 1.3 }}>
+                            {car.year} {car.make}
+                            <br />
+                            <Typography component="span" variant="body2" color="text.secondary">
+                              {car.model}
+                            </Typography>
                           </Typography>
-                          <Typography variant="body2" fontWeight={600}>
-                            ${car.price.toLocaleString()}
-                          </Typography>
+                          {getStatusChip(car.status)}
                         </Box>
-                      </Box>
 
-                      <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.75 }}>
-                        <SpeedIcon sx={{ fontSize: 18, color: 'text.secondary' }} />
-                        <Box>
-                          <Typography variant="caption" color="text.secondary" sx={{ display: 'block', lineHeight: 1 }}>
-                            Mileage
-                          </Typography>
-                          <Typography variant="body2" fontWeight={600}>
-                            {car.mileage.toLocaleString()} mi
-                          </Typography>
+                        {/* Details */}
+                        <Box sx={{ display: 'flex', gap: 3, mt: 2 }}>
+                          <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.75 }}>
+                            <LocalOfferIcon sx={{ fontSize: 18, color: 'secondary.main' }} />
+                            <Box>
+                              <Typography variant="caption" color="text.secondary" sx={{ display: 'block', lineHeight: 1 }}>
+                                Price
+                              </Typography>
+                              <Typography variant="body2" fontWeight={600}>
+                                ${car.price.toLocaleString()}
+                              </Typography>
+                            </Box>
+                          </Box>
+
+                          <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.75 }}>
+                            <SpeedIcon sx={{ fontSize: 18, color: 'text.secondary' }} />
+                            <Box>
+                              <Typography variant="caption" color="text.secondary" sx={{ display: 'block', lineHeight: 1 }}>
+                                Mileage
+                              </Typography>
+                              <Typography variant="body2" fontWeight={600}>
+                                {car.mileage.toLocaleString()} mi
+                              </Typography>
+                            </Box>
+                          </Box>
                         </Box>
-                      </Box>
-                    </Box>
-                  </CardContent>
+                      </CardContent>
 
-                  {/* Action Buttons */}
-                  <CardActions sx={{ px: 2, pb: 2, pt: 0, justifyContent: 'flex-end' }}>
-                    <Tooltip title="Edit">
-                      <IconButton
-                        size="small"
-                        onClick={() => handleOpenEdit(car)}
-                        sx={{
-                          color: 'text.secondary',
-                          '&:hover': { color: 'primary.main', bgcolor: 'rgba(108, 99, 255, 0.08)' },
-                        }}
-                      >
-                        <EditIcon fontSize="small" />
-                      </IconButton>
-                    </Tooltip>
-                    <Tooltip title="Delete">
-                      <IconButton
-                        size="small"
-                        onClick={() => handleDelete(car)}
-                        sx={{
-                          color: 'text.secondary',
-                          '&:hover': { color: 'error.main', bgcolor: 'rgba(255, 77, 106, 0.08)' },
-                        }}
-                      >
-                        <DeleteIcon fontSize="small" />
-                      </IconButton>
-                    </Tooltip>
-                  </CardActions>
-                </Card>
+                      {/* Action Buttons */}
+                      <CardActions sx={{ px: 2, pb: 2, pt: 0, justifyContent: 'flex-end' }}>
+                        <Tooltip title="Edit">
+                          <IconButton
+                            size="small"
+                            onClick={() => handleOpenEdit(car)}
+                            sx={{
+                              color: 'text.secondary',
+                              '&:hover': { color: 'primary.main', bgcolor: 'rgba(108, 99, 255, 0.08)' },
+                            }}
+                          >
+                            <EditIcon fontSize="small" />
+                          </IconButton>
+                        </Tooltip>
+                        <Tooltip title="Delete">
+                          <IconButton
+                            size="small"
+                            onClick={() => handleDelete(car)}
+                            sx={{
+                              color: 'text.secondary',
+                              '&:hover': { color: 'error.main', bgcolor: 'rgba(255, 77, 106, 0.08)' },
+                            }}
+                          >
+                            <DeleteIcon fontSize="small" />
+                          </IconButton>
+                        </Tooltip>
+                      </CardActions>
+                    </Card>
+                  </Grid>
+                ))}
               </Grid>
-            ))}
-          </Grid>
+            )}
+          </>
         )}
       </Container>
 
