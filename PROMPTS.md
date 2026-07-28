@@ -90,3 +90,17 @@ Antigravity implemented the complete CRUD logic in `car.routes.ts`. Added input 
 
 **Result:**
 Antigravity initialized a Vite + React + TypeScript frontend in the `client/` directory. Cleaned up default boilerplate and configured `react-router-dom` for `/login` and `/inventory` routes. Created an `api.ts` fetch wrapper that automatically attaches the JWT from `localStorage`. Built foundational `LoginPage.tsx` and `InventoryPage.tsx` components. Verified build passes and all backend tests remain green.
+
+## Interaction 6: Frontend Styling with Material-UI (MUI)
+
+**Prompt:**
+> Let's style our frontend using Material-UI (MUI). Please complete the following steps:
+> 1. Install the necessary MUI packages in the `client` directory: `@mui/material`, `@emotion/react`, `@emotion/styled`, and `@mui/icons-material`.
+> 2. Open `client/src/main.tsx` and wrap the application in a basic MUI `ThemeProvider` with a default `CssBaseline` to reset standard browser styling.
+> 3. Rewrite `LoginPage.tsx` using MUI components. Build a professional, centered login interface using `Container`, `Card`, `TextField`, and a primary `Button`.
+> 4. Rewrite `InventoryPage.tsx` using MUI. Build a dashboard layout featuring an `AppBar` for top navigation (including a Logout icon button).
+> 5. For the inventory list, use MUI's `Grid` to display the cars as `Card` components. 
+> 6. Inside the inventory cards, use MUI's `Chip` component to visually indicate the car's status (e.g., `color="success"` for Available, `color="default"` for Sold).
+
+**Result:**
+[Pending Antigravity Execution]

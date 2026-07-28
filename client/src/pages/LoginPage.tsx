@@ -1,5 +1,19 @@
 import { useState, type FormEvent } from 'react';
 import { useNavigate } from 'react-router-dom';
+import {
+  Box,
+  Card,
+  CardContent,
+  Container,
+  TextField,
+  Button,
+  Typography,
+  Alert,
+  Link,
+  CircularProgress,
+  Divider,
+} from '@mui/material';
+import DirectionsCarIcon from '@mui/icons-material/DirectionsCar';
 import { authApi, ApiError } from '../services/api';
 
 function LoginPage() {
@@ -32,174 +46,148 @@ function LoginPage() {
   };
 
   return (
-    <div style={styles.container}>
-      <div style={styles.card}>
-        <div style={styles.logoSection}>
-          <span style={styles.logoIcon}>🚗</span>
-          <h1 style={styles.title}>AutoVault</h1>
-          <p style={styles.subtitle}>Car Dealership Management</p>
-        </div>
+    <Box
+      sx={{
+        minHeight: '100vh',
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+        background: 'radial-gradient(ellipse at top, #1a1d2e 0%, #0f1117 70%)',
+        p: 2,
+      }}
+    >
+      <Container maxWidth="sm">
+        <Card
+          elevation={0}
+          sx={{
+            maxWidth: 440,
+            mx: 'auto',
+            p: { xs: 2, sm: 3 },
+            boxShadow: '0 8px 40px rgba(0, 0, 0, 0.4)',
+          }}
+        >
+          <CardContent sx={{ p: { xs: 2, sm: 3 } }}>
+            {/* Logo Section */}
+            <Box sx={{ textAlign: 'center', mb: 4 }}>
+              <Box
+                sx={{
+                  width: 64,
+                  height: 64,
+                  borderRadius: '16px',
+                  background: 'linear-gradient(135deg, #6c63ff 0%, #00d4aa 100%)',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  mx: 'auto',
+                  mb: 2,
+                  boxShadow: '0 4px 20px rgba(108, 99, 255, 0.3)',
+                }}
+              >
+                <DirectionsCarIcon sx={{ fontSize: 32, color: '#fff' }} />
+              </Box>
+              <Typography
+                variant="h4"
+                sx={{
+                  background: 'linear-gradient(135deg, #6c63ff, #00d4aa)',
+                  WebkitBackgroundClip: 'text',
+                  WebkitTextFillColor: 'transparent',
+                }}
+              >
+                AutoVault
+              </Typography>
+              <Typography variant="body2" color="text.secondary" sx={{ mt: 0.5 }}>
+                Car Dealership Management
+              </Typography>
+            </Box>
 
-        <form onSubmit={handleSubmit} style={styles.form}>
-          <h2 style={styles.formTitle}>
-            {isRegister ? 'Create Account' : 'Welcome Back'}
-          </h2>
+            <Divider sx={{ mb: 3 }} />
 
-          {error && <div style={styles.error}>{error}</div>}
+            {/* Form Title */}
+            <Typography variant="h5" align="center" sx={{ mb: 3 }}>
+              {isRegister ? 'Create Account' : 'Welcome Back'}
+            </Typography>
 
-          <div style={styles.inputGroup}>
-            <label htmlFor="email" style={styles.label}>Email</label>
-            <input
-              id="email"
-              type="email"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              placeholder="you@dealership.com"
-              required
-              style={styles.input}
-            />
-          </div>
+            {error && (
+              <Alert severity="error" sx={{ mb: 2, borderRadius: 2 }}>
+                {error}
+              </Alert>
+            )}
 
-          <div style={styles.inputGroup}>
-            <label htmlFor="password" style={styles.label}>Password</label>
-            <input
-              id="password"
-              type="password"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              placeholder="••••••••"
-              required
-              style={styles.input}
-            />
-          </div>
+            <Box component="form" onSubmit={handleSubmit} noValidate>
+              <TextField
+                id="email"
+                label="Email"
+                type="email"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                placeholder="you@dealership.com"
+                required
+                fullWidth
+                margin="normal"
+                autoComplete="email"
+                autoFocus
+              />
 
-          <button
-            type="submit"
-            disabled={loading}
-            style={{
-              ...styles.button,
-              opacity: loading ? 0.7 : 1,
-            }}
-          >
-            {loading ? 'Please wait...' : isRegister ? 'Sign Up' : 'Sign In'}
-          </button>
+              <TextField
+                id="password"
+                label="Password"
+                type="password"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                placeholder="••••••••"
+                required
+                fullWidth
+                margin="normal"
+                autoComplete={isRegister ? 'new-password' : 'current-password'}
+              />
 
-          <p style={styles.toggle}>
-            {isRegister ? 'Already have an account?' : "Don't have an account?"}{' '}
-            <button
-              type="button"
-              onClick={() => {
-                setIsRegister(!isRegister);
-                setError('');
-              }}
-              style={styles.toggleButton}
-            >
-              {isRegister ? 'Sign In' : 'Sign Up'}
-            </button>
-          </p>
-        </form>
-      </div>
-    </div>
+              <Button
+                type="submit"
+                variant="contained"
+                fullWidth
+                size="large"
+                disabled={loading}
+                sx={{
+                  mt: 3,
+                  mb: 2,
+                  py: 1.5,
+                  background: 'linear-gradient(135deg, #6c63ff 0%, #5a52d9 100%)',
+                  '&:hover': {
+                    background: 'linear-gradient(135deg, #7f78ff 0%, #6c63ff 100%)',
+                    boxShadow: '0 4px 20px rgba(108, 99, 255, 0.4)',
+                  },
+                }}
+              >
+                {loading ? (
+                  <CircularProgress size={24} color="inherit" />
+                ) : isRegister ? (
+                  'Sign Up'
+                ) : (
+                  'Sign In'
+                )}
+              </Button>
+
+              <Typography variant="body2" align="center" color="text.secondary">
+                {isRegister ? 'Already have an account?' : "Don't have an account?"}{' '}
+                <Link
+                  component="button"
+                  type="button"
+                  variant="body2"
+                  onClick={() => {
+                    setIsRegister(!isRegister);
+                    setError('');
+                  }}
+                  sx={{ fontWeight: 600 }}
+                >
+                  {isRegister ? 'Sign In' : 'Sign Up'}
+                </Link>
+              </Typography>
+            </Box>
+          </CardContent>
+        </Card>
+      </Container>
+    </Box>
   );
 }
-
-const styles: Record<string, React.CSSProperties> = {
-  container: {
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'center',
-    minHeight: '100vh',
-    padding: '2rem',
-  },
-  card: {
-    background: 'var(--color-surface)',
-    border: '1px solid var(--color-border)',
-    borderRadius: 'var(--radius)',
-    padding: '3rem',
-    width: '100%',
-    maxWidth: '420px',
-    boxShadow: '0 8px 32px rgba(0, 0, 0, 0.3)',
-  },
-  logoSection: {
-    textAlign: 'center' as const,
-    marginBottom: '2rem',
-  },
-  logoIcon: {
-    fontSize: '3rem',
-    display: 'block',
-    marginBottom: '0.5rem',
-  },
-  title: {
-    fontSize: '1.75rem',
-    fontWeight: 700,
-    background: 'linear-gradient(135deg, var(--color-primary), var(--color-accent))',
-    WebkitBackgroundClip: 'text',
-    WebkitTextFillColor: 'transparent',
-  },
-  subtitle: {
-    color: 'var(--color-text-muted)',
-    fontSize: '0.875rem',
-    marginTop: '0.25rem',
-  },
-  form: {
-    display: 'flex',
-    flexDirection: 'column' as const,
-    gap: '1.25rem',
-  },
-  formTitle: {
-    fontSize: '1.25rem',
-    fontWeight: 600,
-    textAlign: 'center' as const,
-  },
-  error: {
-    background: 'rgba(255, 77, 106, 0.1)',
-    border: '1px solid var(--color-danger)',
-    color: 'var(--color-danger)',
-    padding: '0.75rem 1rem',
-    borderRadius: 'var(--radius-sm)',
-    fontSize: '0.875rem',
-  },
-  inputGroup: {
-    display: 'flex',
-    flexDirection: 'column' as const,
-    gap: '0.375rem',
-  },
-  label: {
-    fontSize: '0.8125rem',
-    fontWeight: 500,
-    color: 'var(--color-text-muted)',
-  },
-  input: {
-    background: 'var(--color-bg)',
-    border: '1px solid var(--color-border)',
-    borderRadius: 'var(--radius-sm)',
-    padding: '0.75rem 1rem',
-    fontSize: '0.9375rem',
-    color: 'var(--color-text)',
-    transition: 'border-color var(--transition)',
-  },
-  button: {
-    background: 'linear-gradient(135deg, var(--color-primary), #5a52d9)',
-    color: '#fff',
-    padding: '0.875rem',
-    borderRadius: 'var(--radius-sm)',
-    fontSize: '1rem',
-    fontWeight: 600,
-    transition: 'opacity var(--transition), transform var(--transition)',
-    marginTop: '0.5rem',
-  },
-  toggle: {
-    textAlign: 'center' as const,
-    fontSize: '0.875rem',
-    color: 'var(--color-text-muted)',
-  },
-  toggleButton: {
-    background: 'none',
-    color: 'var(--color-primary)',
-    fontWeight: 600,
-    fontSize: '0.875rem',
-    padding: 0,
-  },
-};
 
 export default LoginPage;

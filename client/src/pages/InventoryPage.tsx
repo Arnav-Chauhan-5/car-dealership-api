@@ -1,5 +1,24 @@
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import {
+  AppBar,
+  Toolbar,
+  Typography,
+  IconButton,
+  Box,
+  Container,
+  Card,
+  CardContent,
+  Chip,
+  Tooltip,
+  CircularProgress,
+} from '@mui/material';
+import Grid from '@mui/material/Grid';
+import LogoutIcon from '@mui/icons-material/Logout';
+import DirectionsCarIcon from '@mui/icons-material/DirectionsCar';
+import SpeedIcon from '@mui/icons-material/Speed';
+import LocalOfferIcon from '@mui/icons-material/LocalOffer';
+import NoCrashIcon from '@mui/icons-material/NoCrash';
 import { carsApi, type Car } from '../services/api';
 
 function InventoryPage() {
@@ -26,198 +45,144 @@ function InventoryPage() {
     navigate('/login');
   };
 
-  return (
-    <div style={styles.container}>
-      {/* Header */}
-      <header style={styles.header}>
-        <div style={styles.headerLeft}>
-          <span style={styles.logo}>🚗</span>
-          <h1 style={styles.headerTitle}>AutoVault Inventory</h1>
-        </div>
-        <button onClick={handleLogout} style={styles.logoutBtn}>
-          Logout
-        </button>
-      </header>
+  const getStatusChip = (status: string) => {
+    switch (status) {
+      case 'available':
+        return <Chip label="Available" color="success" size="small" variant="outlined" />;
+      case 'sold':
+        return <Chip label="Sold" color="default" size="small" variant="outlined" />;
+      case 'pending':
+        return <Chip label="Pending" color="warning" size="small" variant="outlined" />;
+      default:
+        return <Chip label={status} size="small" variant="outlined" />;
+    }
+  };
 
-      {/* Content */}
-      <main style={styles.main}>
+  return (
+    <Box sx={{ minHeight: '100vh', display: 'flex', flexDirection: 'column' }}>
+      {/* App Bar */}
+      <AppBar position="sticky" elevation={0} sx={{ bgcolor: 'background.paper' }}>
+        <Toolbar sx={{ px: { xs: 2, md: 4 } }}>
+          <DirectionsCarIcon sx={{ mr: 1.5, color: 'primary.main' }} />
+          <Typography
+            variant="h6"
+            sx={{
+              flexGrow: 1,
+              background: 'linear-gradient(135deg, #6c63ff, #00d4aa)',
+              WebkitBackgroundClip: 'text',
+              WebkitTextFillColor: 'transparent',
+            }}
+          >
+            AutoVault Inventory
+          </Typography>
+
+          <Chip
+            label={`${cars.length} car${cars.length !== 1 ? 's' : ''}`}
+            size="small"
+            sx={{
+              mr: 2,
+              bgcolor: 'rgba(108, 99, 255, 0.1)',
+              color: 'primary.main',
+              fontWeight: 600,
+            }}
+          />
+
+          <Tooltip title="Logout">
+            <IconButton
+              onClick={handleLogout}
+              sx={{
+                color: 'text.secondary',
+                '&:hover': { color: 'error.main', bgcolor: 'rgba(255, 77, 106, 0.08)' },
+              }}
+            >
+              <LogoutIcon />
+            </IconButton>
+          </Tooltip>
+        </Toolbar>
+      </AppBar>
+
+      {/* Main Content */}
+      <Container maxWidth="lg" sx={{ flex: 1, py: 4 }}>
         {loading ? (
-          <p style={styles.loadingText}>Loading inventory...</p>
+          <Box sx={{ display: 'flex', justifyContent: 'center', mt: 8 }}>
+            <CircularProgress color="primary" />
+          </Box>
         ) : cars.length === 0 ? (
-          <div style={styles.emptyState}>
-            <span style={styles.emptyIcon}>🏎️</span>
-            <h2 style={styles.emptyTitle}>No cars in inventory</h2>
-            <p style={styles.emptySubtitle}>
+          /* Empty State */
+          <Box sx={{ textAlign: 'center', mt: 10 }}>
+            <NoCrashIcon sx={{ fontSize: 72, color: 'text.secondary', mb: 2, opacity: 0.5 }} />
+            <Typography variant="h5" gutterBottom>
+              No cars in inventory
+            </Typography>
+            <Typography variant="body1" color="text.secondary">
               Add your first car to get started.
-            </p>
-          </div>
+            </Typography>
+          </Box>
         ) : (
-          <div style={styles.grid}>
+          /* Car Grid */
+          <Grid container spacing={3}>
             {cars.map((car) => (
-              <div key={car.id} style={styles.card}>
-                <div style={styles.cardHeader}>
-                  <h3 style={styles.carName}>
-                    {car.year} {car.make} {car.model}
-                  </h3>
-                  <span
-                    style={{
-                      ...styles.statusBadge,
-                      background:
-                        car.status === 'available'
-                          ? 'rgba(0, 212, 170, 0.15)'
-                          : car.status === 'sold'
-                          ? 'rgba(255, 77, 106, 0.15)'
-                          : 'rgba(255, 184, 77, 0.15)',
-                      color:
-                        car.status === 'available'
-                          ? 'var(--color-success)'
-                          : car.status === 'sold'
-                          ? 'var(--color-danger)'
-                          : 'var(--color-warning)',
-                    }}
-                  >
-                    {car.status}
-                  </span>
-                </div>
-                <div style={styles.cardDetails}>
-                  <div style={styles.detail}>
-                    <span style={styles.detailLabel}>Price</span>
-                    <span style={styles.detailValue}>
-                      ${car.price.toLocaleString()}
-                    </span>
-                  </div>
-                  <div style={styles.detail}>
-                    <span style={styles.detailLabel}>Mileage</span>
-                    <span style={styles.detailValue}>
-                      {car.mileage.toLocaleString()} mi
-                    </span>
-                  </div>
-                </div>
-              </div>
+              <Grid key={car.id} size={{ xs: 12, sm: 6, md: 4 }}>
+                <Card
+                  elevation={0}
+                  sx={{
+                    height: '100%',
+                    transition: 'all 0.2s ease',
+                    '&:hover': {
+                      borderColor: 'primary.main',
+                      boxShadow: '0 4px 24px rgba(108, 99, 255, 0.15)',
+                      transform: 'translateY(-2px)',
+                    },
+                  }}
+                >
+                  <CardContent sx={{ p: 3 }}>
+                    {/* Header */}
+                    <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', mb: 2 }}>
+                      <Typography variant="h6" sx={{ fontSize: '1.1rem', lineHeight: 1.3 }}>
+                        {car.year} {car.make}
+                        <br />
+                        <Typography component="span" variant="body2" color="text.secondary">
+                          {car.model}
+                        </Typography>
+                      </Typography>
+                      {getStatusChip(car.status)}
+                    </Box>
+
+                    {/* Details */}
+                    <Box sx={{ display: 'flex', gap: 3, mt: 2 }}>
+                      <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.75 }}>
+                        <LocalOfferIcon sx={{ fontSize: 18, color: 'secondary.main' }} />
+                        <Box>
+                          <Typography variant="caption" color="text.secondary" sx={{ display: 'block', lineHeight: 1 }}>
+                            Price
+                          </Typography>
+                          <Typography variant="body2" fontWeight={600}>
+                            ${car.price.toLocaleString()}
+                          </Typography>
+                        </Box>
+                      </Box>
+
+                      <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.75 }}>
+                        <SpeedIcon sx={{ fontSize: 18, color: 'text.secondary' }} />
+                        <Box>
+                          <Typography variant="caption" color="text.secondary" sx={{ display: 'block', lineHeight: 1 }}>
+                            Mileage
+                          </Typography>
+                          <Typography variant="body2" fontWeight={600}>
+                            {car.mileage.toLocaleString()} mi
+                          </Typography>
+                        </Box>
+                      </Box>
+                    </Box>
+                  </CardContent>
+                </Card>
+              </Grid>
             ))}
-          </div>
+          </Grid>
         )}
-      </main>
-    </div>
+      </Container>
+    </Box>
   );
 }
-
-const styles: Record<string, React.CSSProperties> = {
-  container: {
-    minHeight: '100vh',
-    display: 'flex',
-    flexDirection: 'column',
-  },
-  header: {
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-    padding: '1rem 2rem',
-    background: 'var(--color-surface)',
-    borderBottom: '1px solid var(--color-border)',
-  },
-  headerLeft: {
-    display: 'flex',
-    alignItems: 'center',
-    gap: '0.75rem',
-  },
-  logo: {
-    fontSize: '1.5rem',
-  },
-  headerTitle: {
-    fontSize: '1.25rem',
-    fontWeight: 700,
-    background: 'linear-gradient(135deg, var(--color-primary), var(--color-accent))',
-    WebkitBackgroundClip: 'text',
-    WebkitTextFillColor: 'transparent',
-  },
-  logoutBtn: {
-    background: 'transparent',
-    border: '1px solid var(--color-border)',
-    color: 'var(--color-text-muted)',
-    padding: '0.5rem 1rem',
-    borderRadius: 'var(--radius-sm)',
-    fontSize: '0.875rem',
-    transition: 'all var(--transition)',
-  },
-  main: {
-    flex: 1,
-    padding: '2rem',
-    maxWidth: '1200px',
-    width: '100%',
-    margin: '0 auto',
-  },
-  loadingText: {
-    textAlign: 'center',
-    color: 'var(--color-text-muted)',
-    marginTop: '4rem',
-    fontSize: '1.125rem',
-  },
-  emptyState: {
-    textAlign: 'center',
-    marginTop: '6rem',
-  },
-  emptyIcon: {
-    fontSize: '4rem',
-    display: 'block',
-    marginBottom: '1rem',
-  },
-  emptyTitle: {
-    fontSize: '1.5rem',
-    fontWeight: 600,
-    marginBottom: '0.5rem',
-  },
-  emptySubtitle: {
-    color: 'var(--color-text-muted)',
-  },
-  grid: {
-    display: 'grid',
-    gridTemplateColumns: 'repeat(auto-fill, minmax(320px, 1fr))',
-    gap: '1.25rem',
-  },
-  card: {
-    background: 'var(--color-surface)',
-    border: '1px solid var(--color-border)',
-    borderRadius: 'var(--radius)',
-    padding: '1.5rem',
-    transition: 'border-color var(--transition), box-shadow var(--transition)',
-  },
-  cardHeader: {
-    display: 'flex',
-    justifyContent: 'space-between',
-    alignItems: 'flex-start',
-    marginBottom: '1rem',
-  },
-  carName: {
-    fontSize: '1.125rem',
-    fontWeight: 600,
-  },
-  statusBadge: {
-    padding: '0.25rem 0.75rem',
-    borderRadius: '999px',
-    fontSize: '0.75rem',
-    fontWeight: 600,
-    textTransform: 'capitalize',
-  },
-  cardDetails: {
-    display: 'flex',
-    gap: '2rem',
-  },
-  detail: {
-    display: 'flex',
-    flexDirection: 'column',
-    gap: '0.125rem',
-  },
-  detailLabel: {
-    fontSize: '0.75rem',
-    color: 'var(--color-text-muted)',
-    textTransform: 'uppercase',
-    letterSpacing: '0.05em',
-  },
-  detailValue: {
-    fontSize: '1rem',
-    fontWeight: 600,
-  },
-};
 
 export default InventoryPage;
