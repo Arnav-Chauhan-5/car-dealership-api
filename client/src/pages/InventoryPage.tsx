@@ -7,9 +7,6 @@ import {
   IconButton,
   Box,
   Container,
-  Card,
-  CardContent,
-  CardActions,
   Chip,
   Tooltip,
   CircularProgress,
@@ -19,20 +16,36 @@ import {
   TextField,
   MenuItem,
   InputAdornment,
+  Divider,
+  Button,
 } from '@mui/material';
 import Grid from '@mui/material/Grid';
 import LogoutIcon from '@mui/icons-material/Logout';
 import DirectionsCarIcon from '@mui/icons-material/DirectionsCar';
 import SpeedIcon from '@mui/icons-material/Speed';
-import LocalOfferIcon from '@mui/icons-material/LocalOffer';
-import NoCrashIcon from '@mui/icons-material/NoCrash';
+import AttachMoneyIcon from '@mui/icons-material/AttachMoney';
+import CalendarTodayIcon from '@mui/icons-material/CalendarToday';
 import AddIcon from '@mui/icons-material/Add';
-import EditIcon from '@mui/icons-material/Edit';
-import DeleteIcon from '@mui/icons-material/Delete';
+import EditOutlinedIcon from '@mui/icons-material/EditOutlined';
+import DeleteOutlinedIcon from '@mui/icons-material/DeleteOutlined';
 import SearchIcon from '@mui/icons-material/Search';
-import FilterListIcon from '@mui/icons-material/FilterList';
+import TuneIcon from '@mui/icons-material/Tune';
+import InventoryIcon from '@mui/icons-material/Inventory';
 import { carsApi, type Car } from '../services/api';
 import CarFormModal from '../components/CarFormModal';
+
+// ─── Design tokens from DESIGN.md ──────────────────────────────
+const STATUS_COLORS: Record<string, { text: string; bg: string }> = {
+  available: { text: '#00e5ff', bg: 'rgba(0, 229, 255, 0.10)' },
+  pending:   { text: '#bb86fc', bg: 'rgba(187, 134, 252, 0.10)' },
+  sold:      { text: '#64748b', bg: 'rgba(100, 116, 139, 0.10)' },
+};
+
+const GLASS = {
+  bg:     'rgba(255, 255, 255, 0.04)',
+  border: '1px solid rgba(255, 255, 255, 0.10)',
+  blur:   'blur(12px)',
+};
 
 const STATUS_FILTER_OPTIONS = [
   { value: 'All', label: 'All Statuses' },
@@ -40,6 +53,209 @@ const STATUS_FILTER_OPTIONS = [
   { value: 'pending', label: 'Pending' },
   { value: 'sold', label: 'Sold' },
 ];
+
+// ─── Status Badge (DESIGN.md spec) ──────────────────────────────
+function StatusBadge({ status }: { status: string }) {
+  const colors = STATUS_COLORS[status] || { text: '#849396', bg: 'rgba(132, 147, 150, 0.10)' };
+  return (
+    <Chip
+      label={status}
+      size="small"
+      variant="filled"
+      sx={{
+        backgroundColor: colors.bg,
+        color: colors.text,
+        fontSize: '12px',
+        fontWeight: 600,
+        letterSpacing: '0.05em',
+        textTransform: 'uppercase',
+        border: 'none',
+        height: 28,
+      }}
+    />
+  );
+}
+
+// ─── Vehicle Card ───────────────────────────────────────────────
+function VehicleCard({
+  car,
+  onEdit,
+  onDelete,
+}: {
+  car: Car;
+  onEdit: () => void;
+  onDelete: () => void;
+}) {
+  return (
+    <Box
+      sx={{
+        height: '100%',
+        display: 'flex',
+        flexDirection: 'column',
+        backgroundColor: 'rgba(255, 255, 255, 0.04)',
+        backdropFilter: 'blur(12px)',
+        WebkitBackdropFilter: 'blur(12px)',
+        border: '1px solid rgba(255, 255, 255, 0.1)',
+        borderRadius: '8px',
+        boxShadow: '0 8px 24px rgba(2, 6, 23, 0.35)',
+        p: 0,
+        transition: 'border-color 0.2s ease, box-shadow 0.2s ease, transform 0.2s ease',
+        '&:hover': {
+          borderColor: 'rgba(0, 229, 255, 0.30)',
+          boxShadow: '0 12px 36px rgba(0, 229, 255, 0.08)',
+          transform: 'translateY(-1px)',
+        },
+      }}
+    >
+      {/* Card Body */}
+      <Box sx={{ p: 3, flex: 1 }}>
+        {/* Top row: Year + Status */}
+        <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 1.5 }}>
+          <Typography
+            sx={{
+              fontSize: '12px',
+              fontWeight: 600,
+              letterSpacing: '0.05em',
+              color: 'text.secondary',
+              textTransform: 'uppercase',
+              fontFamily: 'Inter, sans-serif',
+            }}
+          >
+            {car.year}
+          </Typography>
+          <StatusBadge status={car.status} />
+        </Box>
+
+        {/* Make — large display, tight tracking */}
+        <Typography
+          sx={{
+            fontSize: '22px',
+            fontWeight: 700,
+            lineHeight: 1.2,
+            letterSpacing: '-0.01em',
+            color: 'text.primary',
+            mb: 0.25,
+            fontFamily: 'Inter, sans-serif',
+          }}
+        >
+          {car.make}
+        </Typography>
+
+        {/* Model — lighter secondary */}
+        <Typography
+          sx={{
+            fontSize: '15px',
+            fontWeight: 400,
+            color: 'text.secondary',
+            mb: 2.5,
+            fontFamily: 'Inter, sans-serif',
+          }}
+        >
+          {car.model}
+        </Typography>
+
+        {/* Data grid: Price + Mileage */}
+        <Box
+          sx={{
+            display: 'grid',
+            gridTemplateColumns: '1fr 1fr',
+            gap: 2,
+            pt: 2,
+            borderTop: '1px solid rgba(255, 255, 255, 0.06)',
+          }}
+        >
+          {/* Price */}
+          <Box>
+            <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.5, mb: 0.5 }}>
+              <AttachMoneyIcon sx={{ fontSize: 14, color: '#00e5ff', opacity: 0.7 }} />
+              <Typography sx={{ fontSize: '11px', fontWeight: 600, letterSpacing: '0.08em', color: '#849396', textTransform: 'uppercase', fontFamily: 'Inter, sans-serif' }}>
+                Price
+              </Typography>
+            </Box>
+            <Typography
+              sx={{
+                fontSize: '18px',
+                fontWeight: 700,
+                color: '#00e5ff',
+                letterSpacing: '-0.01em',
+                lineHeight: 1.2,
+                fontFamily: 'Inter, sans-serif',
+              }}
+            >
+              ${car.price.toLocaleString()}
+            </Typography>
+          </Box>
+
+          {/* Mileage */}
+          <Box>
+            <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.5, mb: 0.5 }}>
+              <SpeedIcon sx={{ fontSize: 14, color: 'text.secondary', opacity: 0.5 }} />
+              <Typography sx={{ fontSize: '11px', fontWeight: 600, letterSpacing: '0.08em', color: '#849396', textTransform: 'uppercase', fontFamily: 'Inter, sans-serif' }}>
+                Mileage
+              </Typography>
+            </Box>
+            <Typography
+              sx={{
+                fontSize: '16px',
+                fontWeight: 700,
+                color: 'text.primary',
+                letterSpacing: '0.02em',
+                lineHeight: 1.2,
+                fontFamily: 'Inter, sans-serif',
+              }}
+            >
+              {car.mileage.toLocaleString()}
+              <Typography component="span" sx={{ fontSize: '12px', color: 'text.secondary', ml: 0.5, fontFamily: 'Inter, sans-serif' }}>mi</Typography>
+            </Typography>
+          </Box>
+        </Box>
+      </Box>
+
+      {/* Card Footer — actions */}
+      <Box
+        sx={{
+          display: 'flex',
+          justifyContent: 'flex-end',
+          gap: 0.5,
+          px: 2,
+          py: 1.5,
+          borderTop: '1px solid rgba(255, 255, 255, 0.05)',
+        }}
+      >
+        <Tooltip title="Edit" arrow>
+          <IconButton
+            size="small"
+            onClick={onEdit}
+            sx={{
+              color: 'rgba(255, 255, 255, 0.40)',
+              '&:hover': { color: '#00e5ff', bgcolor: 'rgba(0, 229, 255, 0.08)' },
+              transition: 'all 0.15s ease',
+            }}
+          >
+            <EditOutlinedIcon sx={{ fontSize: 18 }} />
+          </IconButton>
+        </Tooltip>
+        <Tooltip title="Delete" arrow>
+          <IconButton
+            size="small"
+            onClick={onDelete}
+            sx={{
+              color: 'rgba(255, 255, 255, 0.40)',
+              '&:hover': { color: '#ffb4ab', bgcolor: 'rgba(255, 180, 171, 0.08)' },
+              transition: 'all 0.15s ease',
+            }}
+          >
+            <DeleteOutlinedIcon sx={{ fontSize: 18 }} />
+          </IconButton>
+        </Tooltip>
+      </Box>
+    </Box>
+  );
+}
+
+// ═══════════════════════════════════════════════════════════════════
+// ─── Main Page ──────────────────────────────────────────────────
+// ═══════════════════════════════════════════════════════════════════
 
 function InventoryPage() {
   const navigate = useNavigate();
@@ -84,6 +300,7 @@ function InventoryPage() {
       .finally(() => setLoading(false));
   }, []);
 
+  
   useEffect(() => {
     const token = localStorage.getItem('token');
     if (!token) {
@@ -138,91 +355,135 @@ function InventoryPage() {
     }
   };
 
-  // ─── Status Chip ──────────────────────────────────────────────
-
-  const getStatusChip = (status: string) => {
-    switch (status) {
-      case 'available':
-        return <Chip label="Available" color="success" size="small" variant="outlined" />;
-      case 'sold':
-        return <Chip label="Sold" color="default" size="small" variant="outlined" />;
-      case 'pending':
-        return <Chip label="Pending" color="warning" size="small" variant="outlined" />;
-      default:
-        return <Chip label={status} size="small" variant="outlined" />;
-    }
-  };
+  // ─── Stats for header ────────────────────────────────────────
+  const availableCount = cars.filter((c) => c.status === 'available').length;
+  const totalValue = cars.reduce((sum, c) => sum + c.price, 0);
 
   return (
-    <Box sx={{ minHeight: '100vh', display: 'flex', flexDirection: 'column' }}>
-      {/* App Bar */}
-      <AppBar position="sticky" elevation={0} sx={{ bgcolor: 'background.paper' }}>
-        <Toolbar sx={{ px: { xs: 2, md: 4 } }}>
-          <DirectionsCarIcon sx={{ mr: 1.5, color: 'primary.main' }} />
+    <Box sx={{ minHeight: '100vh', display: 'flex', flexDirection: 'column', bgcolor: '#0b1326' }}>
+
+      {/* ── Top Navigation Bar ────────────────────────────────── */}
+      <AppBar position="sticky" elevation={0}>
+        <Toolbar sx={{ px: { xs: 2, md: 4 }, minHeight: { xs: 56, md: 64 } }}>
+          <DirectionsCarIcon sx={{ mr: 1.5, color: '#00e5ff', fontSize: 24 }} />
           <Typography
             variant="h6"
             sx={{
               flexGrow: 1,
-              background: 'linear-gradient(135deg, #6c63ff, #00d4aa)',
+              fontSize: '16px',
+              fontWeight: 700,
+              letterSpacing: '-0.01em',
+              background: 'linear-gradient(135deg, #00e5ff, #bb86fc)',
               WebkitBackgroundClip: 'text',
               WebkitTextFillColor: 'transparent',
             }}
           >
-            AutoVault Inventory
+            AutoVault
           </Typography>
 
-          <Chip
-            label={`${cars.length} car${cars.length !== 1 ? 's' : ''}`}
-            size="small"
-            sx={{
-              mr: 2,
-              bgcolor: 'rgba(108, 99, 255, 0.1)',
-              color: 'primary.main',
-              fontWeight: 600,
-            }}
-          />
+          {/* Quick stats in header */}
+          <Box sx={{ display: { xs: 'none', md: 'flex' }, alignItems: 'center', gap: 2, mr: 2 }}>
+            <Box sx={{ textAlign: 'right' }}>
+              <Typography sx={{ fontSize: '10px', fontWeight: 600, letterSpacing: '0.08em', color: 'text.secondary', textTransform: 'uppercase', lineHeight: 1 }}>
+                Vehicles
+              </Typography>
+              <Typography sx={{ fontSize: '16px', fontWeight: 700, color: 'text.primary', letterSpacing: '-0.02em' }}>
+                {cars.length}
+              </Typography>
+            </Box>
+            <Divider orientation="vertical" flexItem sx={{ borderColor: 'rgba(255,255,255,0.08)', mx: 0.5 }} />
+            <Box sx={{ textAlign: 'right' }}>
+              <Typography sx={{ fontSize: '10px', fontWeight: 600, letterSpacing: '0.08em', color: 'text.secondary', textTransform: 'uppercase', lineHeight: 1 }}>
+                Available
+              </Typography>
+              <Typography sx={{ fontSize: '16px', fontWeight: 700, color: '#00e5ff', letterSpacing: '-0.02em' }}>
+                {availableCount}
+              </Typography>
+            </Box>
+            <Divider orientation="vertical" flexItem sx={{ borderColor: 'rgba(255,255,255,0.08)', mx: 0.5 }} />
+            <Box sx={{ textAlign: 'right' }}>
+              <Typography sx={{ fontSize: '10px', fontWeight: 600, letterSpacing: '0.08em', color: 'text.secondary', textTransform: 'uppercase', lineHeight: 1 }}>
+                Total Value
+              </Typography>
+              <Typography sx={{ fontSize: '16px', fontWeight: 700, color: 'text.primary', letterSpacing: '-0.02em' }}>
+                ${totalValue.toLocaleString()}
+              </Typography>
+            </Box>
+          </Box>
 
-          <Tooltip title="Logout">
+          <Tooltip title="Logout" arrow>
             <IconButton
               onClick={handleLogout}
               sx={{
-                color: 'text.secondary',
-                '&:hover': { color: 'error.main', bgcolor: 'rgba(255, 77, 106, 0.08)' },
+                color: 'rgba(255,255,255,0.45)',
+                '&:hover': { color: '#ffb4ab', bgcolor: 'rgba(255, 180, 171, 0.08)' },
               }}
             >
-              <LogoutIcon />
+              <LogoutIcon sx={{ fontSize: 20 }} />
             </IconButton>
           </Tooltip>
         </Toolbar>
       </AppBar>
 
-      {/* Main Content */}
-      <Container maxWidth="lg" sx={{ flex: 1, py: 4 }}>
+      {/* ── Main Content Area ─────────────────────────────────── */}
+      <Box sx={{ flex: 1, px: { xs: 2, md: 4 }, py: { xs: 3, md: 4 }, maxWidth: 1400, width: '100%', mx: 'auto' }}>
+
         {loading ? (
-          <Box sx={{ display: 'flex', justifyContent: 'center', mt: 8 }}>
-            <CircularProgress color="primary" />
+          <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', mt: 16 }}>
+            <CircularProgress size={40} sx={{ color: '#00e5ff', mb: 2 }} />
+            <Typography sx={{ fontSize: '13px', color: 'text.secondary', letterSpacing: '0.04em' }}>
+              Loading inventory...
+            </Typography>
           </Box>
         ) : cars.length === 0 ? (
-          /* Empty State — no cars at all */
-          <Box sx={{ textAlign: 'center', mt: 10 }}>
-            <NoCrashIcon sx={{ fontSize: 72, color: 'text.secondary', mb: 2, opacity: 0.5 }} />
-            <Typography variant="h5" gutterBottom>
-              No cars in inventory
+          /* ── Empty State ────────────────────────────────────── */
+          <Box sx={{ textAlign: 'center', mt: 14 }}>
+            <Box
+              sx={{
+                width: 80,
+                height: 80,
+                borderRadius: '16px',
+                backgroundColor: GLASS.bg,
+                border: GLASS.border,
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                mx: 'auto',
+                mb: 3,
+              }}
+            >
+              <InventoryIcon sx={{ fontSize: 36, color: 'rgba(255,255,255,0.2)' }} />
+            </Box>
+            <Typography sx={{ fontSize: '20px', fontWeight: 600, mb: 1 }}>
+              No vehicles in inventory
             </Typography>
-            <Typography variant="body1" color="text.secondary" sx={{ mb: 3 }}>
-              Add your first car to get started.
+            <Typography sx={{ fontSize: '14px', color: 'text.secondary', mb: 4, maxWidth: 320, mx: 'auto' }}>
+              Your fleet dashboard is empty. Add your first vehicle to get started.
             </Typography>
+            <Button
+              variant="contained"
+              startIcon={<AddIcon />}
+              onClick={handleOpenAdd}
+              size="large"
+            >
+              Add Vehicle
+            </Button>
           </Box>
         ) : (
           <>
-            {/* Search & Filter Control Bar */}
+            {/* ── Control Bar ────────────────────────────────── */}
             <Box
               sx={{
                 display: 'flex',
-                gap: 2,
+                gap: 1.5,
                 mb: 3,
+                p: 1.5,
                 flexDirection: { xs: 'column', sm: 'row' },
                 alignItems: { sm: 'center' },
+                backgroundColor: GLASS.bg,
+                backdropFilter: GLASS.blur,
+                border: GLASS.border,
+                borderRadius: '8px',
               }}
             >
               <TextField
@@ -230,12 +491,19 @@ function InventoryPage() {
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
                 size="small"
-                sx={{ flex: 1, minWidth: 200 }}
+                sx={{
+                  flex: 1,
+                  '& .MuiOutlinedInput-root': {
+                    backgroundColor: 'rgba(255,255,255,0.03)',
+                    '& fieldset': { borderColor: 'rgba(255,255,255,0.06)' },
+                    '&:hover fieldset': { borderColor: 'rgba(255,255,255,0.12)' },
+                  },
+                }}
                 slotProps={{
                   input: {
                     startAdornment: (
                       <InputAdornment position="start">
-                        <SearchIcon sx={{ color: 'text.secondary', fontSize: 20 }} />
+                        <SearchIcon sx={{ color: 'rgba(255,255,255,0.3)', fontSize: 20 }} />
                       </InputAdornment>
                     ),
                   },
@@ -243,18 +511,27 @@ function InventoryPage() {
                 inputProps={{ 'aria-label': 'Search cars' }}
               />
 
+              <Divider orientation="vertical" flexItem sx={{ borderColor: 'rgba(255,255,255,0.06)', display: { xs: 'none', sm: 'block' } }} />
+
               <TextField
                 select
                 value={statusFilter}
                 onChange={(e) => setStatusFilter(e.target.value)}
                 size="small"
-                sx={{ minWidth: 180 }}
                 label="Status"
+                sx={{
+                  minWidth: 170,
+                  '& .MuiOutlinedInput-root': {
+                    backgroundColor: 'rgba(255,255,255,0.03)',
+                    '& fieldset': { borderColor: 'rgba(255,255,255,0.06)' },
+                    '&:hover fieldset': { borderColor: 'rgba(255,255,255,0.12)' },
+                  },
+                }}
                 slotProps={{
                   input: {
                     startAdornment: (
                       <InputAdornment position="start">
-                        <FilterListIcon sx={{ color: 'text.secondary', fontSize: 20 }} />
+                        <TuneIcon sx={{ color: 'rgba(255,255,255,0.3)', fontSize: 18 }} />
                       </InputAdornment>
                     ),
                   },
@@ -266,115 +543,52 @@ function InventoryPage() {
                   </MenuItem>
                 ))}
               </TextField>
+
+              {/* Result count */}
+              <Typography
+                sx={{
+                  fontSize: '12px',
+                  fontWeight: 600,
+                  letterSpacing: '0.05em',
+                  color: 'text.secondary',
+                  whiteSpace: 'nowrap',
+                  px: 1,
+                  display: { xs: 'none', sm: 'block' },
+                }}
+              >
+                {filteredCars.length} of {cars.length}
+              </Typography>
             </Box>
 
-            {/* Car Grid or No-Matches State */}
+            {/* ── Vehicle Grid or No-Match ────────────────────── */}
             {filteredCars.length === 0 ? (
-              <Box sx={{ textAlign: 'center', mt: 8 }}>
-                <SearchIcon sx={{ fontSize: 56, color: 'text.secondary', mb: 2, opacity: 0.4 }} />
-                <Typography variant="h6" gutterBottom>
+              <Box sx={{ textAlign: 'center', mt: 10 }}>
+                <SearchIcon sx={{ fontSize: 48, color: 'rgba(255,255,255,0.12)', mb: 2 }} />
+                <Typography variant="h6" sx={{ fontSize: '16px', fontWeight: 600, mb: 0.5 }}>
                   No cars found
                 </Typography>
-                <Typography variant="body2" color="text.secondary">
+                <Typography sx={{ fontSize: '13px', color: 'text.secondary' }}>
                   Try adjusting your search or filter criteria.
                 </Typography>
               </Box>
             ) : (
               <Grid container spacing={3}>
                 {filteredCars.map((car) => (
-                  <Grid key={car.id} size={{ xs: 12, sm: 6, md: 4 }}>
-                    <Card
-                      elevation={0}
-                      sx={{
-                        height: '100%',
-                        display: 'flex',
-                        flexDirection: 'column',
-                        transition: 'all 0.2s ease',
-                        '&:hover': {
-                          borderColor: 'primary.main',
-                          boxShadow: '0 4px 24px rgba(108, 99, 255, 0.15)',
-                          transform: 'translateY(-2px)',
-                        },
-                      }}
-                    >
-                      <CardContent sx={{ p: 3, flex: 1 }}>
-                        {/* Header */}
-                        <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', mb: 2 }}>
-                          <Typography variant="h6" sx={{ fontSize: '1.1rem', lineHeight: 1.3 }}>
-                            {car.year} {car.make}
-                            <br />
-                            <Typography component="span" variant="body2" color="text.secondary">
-                              {car.model}
-                            </Typography>
-                          </Typography>
-                          {getStatusChip(car.status)}
-                        </Box>
-
-                        {/* Details */}
-                        <Box sx={{ display: 'flex', gap: 3, mt: 2 }}>
-                          <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.75 }}>
-                            <LocalOfferIcon sx={{ fontSize: 18, color: 'secondary.main' }} />
-                            <Box>
-                              <Typography variant="caption" color="text.secondary" sx={{ display: 'block', lineHeight: 1 }}>
-                                Price
-                              </Typography>
-                              <Typography variant="body2" fontWeight={600}>
-                                ${car.price.toLocaleString()}
-                              </Typography>
-                            </Box>
-                          </Box>
-
-                          <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.75 }}>
-                            <SpeedIcon sx={{ fontSize: 18, color: 'text.secondary' }} />
-                            <Box>
-                              <Typography variant="caption" color="text.secondary" sx={{ display: 'block', lineHeight: 1 }}>
-                                Mileage
-                              </Typography>
-                              <Typography variant="body2" fontWeight={600}>
-                                {car.mileage.toLocaleString()} mi
-                              </Typography>
-                            </Box>
-                          </Box>
-                        </Box>
-                      </CardContent>
-
-                      {/* Action Buttons */}
-                      <CardActions sx={{ px: 2, pb: 2, pt: 0, justifyContent: 'flex-end' }}>
-                        <Tooltip title="Edit">
-                          <IconButton
-                            size="small"
-                            onClick={() => handleOpenEdit(car)}
-                            sx={{
-                              color: 'text.secondary',
-                              '&:hover': { color: 'primary.main', bgcolor: 'rgba(108, 99, 255, 0.08)' },
-                            }}
-                          >
-                            <EditIcon fontSize="small" />
-                          </IconButton>
-                        </Tooltip>
-                        <Tooltip title="Delete">
-                          <IconButton
-                            size="small"
-                            onClick={() => handleDelete(car)}
-                            sx={{
-                              color: 'text.secondary',
-                              '&:hover': { color: 'error.main', bgcolor: 'rgba(255, 77, 106, 0.08)' },
-                            }}
-                          >
-                            <DeleteIcon fontSize="small" />
-                          </IconButton>
-                        </Tooltip>
-                      </CardActions>
-                    </Card>
+                  <Grid item key={car.id} xs={12} sm={6} md={4}>
+                    <VehicleCard
+                      car={car}
+                      onEdit={() => handleOpenEdit(car)}
+                      onDelete={() => handleDelete(car)}
+                    />
                   </Grid>
                 ))}
               </Grid>
             )}
           </>
         )}
-      </Container>
+      </Box>
 
-      {/* Floating Action Button */}
+      {/* ── Floating Action Button ────────────────────────────── */}
       <Fab
         color="primary"
         aria-label="Add car"
@@ -383,20 +597,14 @@ function InventoryPage() {
           position: 'fixed',
           bottom: 32,
           right: 32,
-          background: 'linear-gradient(135deg, #6c63ff 0%, #5a52d9 100%)',
-          boxShadow: '0 4px 20px rgba(108, 99, 255, 0.4)',
-          '&:hover': {
-            background: 'linear-gradient(135deg, #7f78ff 0%, #6c63ff 100%)',
-            boxShadow: '0 6px 28px rgba(108, 99, 255, 0.5)',
-            transform: 'scale(1.05)',
-          },
+          '&:hover': { transform: 'scale(1.05)' },
           transition: 'all 0.2s ease',
         }}
       >
         <AddIcon />
       </Fab>
 
-      {/* Car Form Modal */}
+      {/* ── Car Form Modal ────────────────────────────────────── */}
       <CarFormModal
         open={modalOpen}
         onClose={handleCloseModal}
@@ -404,7 +612,7 @@ function InventoryPage() {
         car={editingCar}
       />
 
-      {/* Snackbar Notifications */}
+      {/* ── Snackbar Notifications ────────────────────────────── */}
       <Snackbar
         open={snackbar.open}
         autoHideDuration={3000}
@@ -415,7 +623,7 @@ function InventoryPage() {
           severity={snackbar.severity}
           variant="filled"
           onClose={() => setSnackbar((prev) => ({ ...prev, open: false }))}
-          sx={{ borderRadius: 2 }}
+          sx={{ borderRadius: '8px' }}
         >
           {snackbar.message}
         </Alert>

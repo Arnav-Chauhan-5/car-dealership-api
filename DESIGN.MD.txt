@@ -1,0 +1,191 @@
+---
+name: Luminous Performance
+colors:
+  surface: '#0b1326'
+  surface-dim: '#0b1326'
+  surface-bright: '#31394d'
+  surface-container-lowest: '#060e20'
+  surface-container-low: '#131b2e'
+  surface-container: '#171f33'
+  surface-container-high: '#222a3d'
+  surface-container-highest: '#2d3449'
+  on-surface: '#dae2fd'
+  on-surface-variant: '#bac9cc'
+  inverse-surface: '#dae2fd'
+  inverse-on-surface: '#283044'
+  outline: '#849396'
+  outline-variant: '#3b494c'
+  surface-tint: '#00daf3'
+  primary: '#c3f5ff'
+  on-primary: '#00363d'
+  primary-container: '#00e5ff'
+  on-primary-container: '#00626e'
+  inverse-primary: '#006875'
+  secondary: '#dab9ff'
+  on-secondary: '#460283'
+  secondary-container: '#602b9d'
+  on-secondary-container: '#cfa7ff'
+  tertiary: '#ffe9ce'
+  on-tertiary: '#432c00'
+  tertiary-container: '#ffc76e'
+  on-tertiary-container: '#785100'
+  error: '#ffb4ab'
+  on-error: '#690005'
+  error-container: '#93000a'
+  on-error-container: '#ffdad6'
+  primary-fixed: '#9cf0ff'
+  primary-fixed-dim: '#00daf3'
+  on-primary-fixed: '#001f24'
+  on-primary-fixed-variant: '#004f58'
+  secondary-fixed: '#eedbff'
+  secondary-fixed-dim: '#dab9ff'
+  on-secondary-fixed: '#2a0053'
+  on-secondary-fixed-variant: '#5e289b'
+  tertiary-fixed: '#ffdeae'
+  tertiary-fixed-dim: '#ffba3f'
+  on-tertiary-fixed: '#281800'
+  on-tertiary-fixed-variant: '#604100'
+  background: '#0b1326'
+  on-background: '#dae2fd'
+  surface-variant: '#2d3449'
+typography:
+  display-lg:
+    fontFamily: Inter
+    fontSize: 48px
+    fontWeight: '700'
+    lineHeight: 56px
+    letterSpacing: -0.02em
+  headline-lg:
+    fontFamily: Inter
+    fontSize: 32px
+    fontWeight: '600'
+    lineHeight: 40px
+    letterSpacing: -0.01em
+  headline-lg-mobile:
+    fontFamily: Inter
+    fontSize: 24px
+    fontWeight: '600'
+    lineHeight: 32px
+  headline-md:
+    fontFamily: Inter
+    fontSize: 24px
+    fontWeight: '600'
+    lineHeight: 32px
+  body-lg:
+    fontFamily: Inter
+    fontSize: 18px
+    fontWeight: '400'
+    lineHeight: 28px
+  body-md:
+    fontFamily: Inter
+    fontSize: 16px
+    fontWeight: '400'
+    lineHeight: 24px
+  body-sm:
+    fontFamily: Inter
+    fontSize: 14px
+    fontWeight: '400'
+    lineHeight: 20px
+  label-md:
+    fontFamily: Inter
+    fontSize: 12px
+    fontWeight: '600'
+    lineHeight: 16px
+    letterSpacing: 0.05em
+  data-mono:
+    fontFamily: Inter
+    fontSize: 14px
+    fontWeight: '500'
+    lineHeight: 20px
+    letterSpacing: 0.02em
+rounded:
+  sm: 0.125rem
+  DEFAULT: 0.25rem
+  md: 0.375rem
+  lg: 0.5rem
+  xl: 0.75rem
+  full: 9999px
+spacing:
+  unit: 8px
+  container-margin: 32px
+  gutter: 24px
+  card-padding: 24px
+  section-gap: 48px
+---
+
+## Brand & Style
+
+The design system is engineered for a high-performance B2B environment, specifically targeting luxury automotive inventory management. The brand personality is **Elite, Analytical, and Cutting-Edge**. It evokes a sense of "mission control" for dealership owners, where high-value assets are monitored with precision and technological sophistication.
+
+The visual style is a fusion of **Corporate Modernism** and **Glassmorphism**. It prioritizes data density and legibility through a refined, dark-mode interface. Surfaces utilize semi-transparent layers and subtle backdrop blurs to create a sense of depth and hierarchy without overwhelming the user. The aesthetic is "SaaS-meets-Supercar"—technical, expensive, and incredibly fast.
+
+## Colors
+
+The color palette is built on a foundation of deep, nocturnal tones to reduce eye strain and emphasize the vibrant accent colors.
+
+- **Primary (Electric Blue):** Used for primary actions, active states, and the 'Available' status. It represents liquidity and movement.
+- **Secondary (Vibrant Purple):** Used for secondary data points and 'Pending' states, adding a premium, tech-forward flair.
+- **Backgrounds:** The base layer is a charcoal-navy (#0F172A). Surface containers use subtle variations (lighter or more transparent) to establish structure.
+- **Status Indicators:** 
+  - **Available:** Electric Blue (#00E5FF)
+  - **Pending:** Vibrant Purple (#BB86FC) or Amber (#FFB100) for urgency.
+  - **Sold:** Muted Slate Grey (#64748B) to recede from focus.
+
+## Typography
+
+The design system utilizes **Inter** exclusively to ensure maximum legibility for complex data sets and inventory lists. 
+
+- **Weight Usage:** Use Bold (700) for large display numbers (e.g., total inventory value), Semi-Bold (600) for headings, and Regular (400) for body text and descriptions.
+- **Tracking:** Headings use slight negative letter-spacing for a tighter, "high-end" editorial feel. Labels and data points use increased letter-spacing to improve scannability.
+- **Data Display:** For VIN numbers or technical specs, use `data-mono` (Medium weight) to ensure character alignment in tables.
+
+## Layout & Spacing
+
+This design system follows a **12-column fluid grid** for desktop, transitioning to a **4-column grid** for mobile.
+
+- **Rhythm:** A strict 8px baseline grid is used for all internal component spacing.
+- **Density:** The dashboard maintains a "Professional" density—tight enough to show significant data, but with generous outer margins (32px) to keep the UI feeling spacious and luxury.
+- **Adaptive Rules:** On tablet, gutters reduce to 16px. On mobile, all horizontal card padding is standardized to 16px.
+
+## Elevation & Depth
+
+Visual hierarchy is achieved through **Glassmorphism** and **Tonal Layering**.
+
+- **Surface 0 (Base):** Deep Charcoal Navy (#0F172A).
+- **Surface 1 (Cards/Panels):** Semi-transparent background (e.g., white at 4% opacity) with a `backdrop-filter: blur(12px)`.
+- **Borders:** Instead of heavy shadows, use 1px solid borders with 10% white opacity. This creates a "glass edge" effect.
+- **Shadows:** Use extremely soft, large-radius ambient shadows (Color: #000, Opacity: 30%, Blur: 40px) only for modals or active floating elements to lift them off the grid.
+- **Accents:** Use a subtle inner glow (1px, 20% opacity of the accent color) on active buttons to simulate a neon hardware look.
+
+## Shapes
+
+The shape language is **Soft and Precise**. 
+
+- **Containers:** Cards and primary UI panels use a 0.25rem (4px) or 0.5rem (8px) radius. This small radius maintains a professional, technical aesthetic while avoiding the harshness of sharp corners.
+- **Interactive Elements:** Buttons and input fields mirror the card radius.
+- **Badges:** Status badges use a slightly higher radius (rounded-lg) to distinguish them as distinct metadata tokens.
+
+## Components
+
+### Buttons
+- **Primary:** Solid Electric Blue (#00E5FF) with dark navy text. No shadow; high contrast.
+- **Secondary:** Transparent background with 1px border of #BB86FC and matching text color.
+- **Ghost:** No border or background, white text at 70% opacity, becoming 100% on hover.
+
+### Status Badges
+- **Available:** Electric Blue text on a 10% opacity blue background.
+- **Pending:** Vibrant Purple text on a 10% opacity purple background.
+- **Sold:** Slate Grey text on a 10% opacity grey background.
+- *Note:* All badges use `label-md` typography for clarity.
+
+### Cards
+- Standardized with `backdrop-filter: blur(12px)`, a 1px border (white 10%), and 24px internal padding.
+- For "Featured" vehicles, add a top-border of 2px using the Primary accent color.
+
+### Input Fields
+- Dark backgrounds (slightly lighter than Surface 0) with a 1px border. 
+- On focus, the border transitions to Electric Blue with a subtle 2px outer glow.
+
+### Data Tables
+- Header rows should be uppercase `label-md`. 
+- Alternating row highlights should be very subtle (2% white opacity) to maintain the clean glass look.

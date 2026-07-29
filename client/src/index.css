@@ -1,21 +1,56 @@
+/* ─── Luminous Performance — Global Styles ──────────────────── */
+/* Design system: Inter font, 8px baseline grid, dark glassmorphism */
+
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+
 :root {
-  --color-bg: #0f1117;
-  --color-surface: #1a1d27;
-  --color-surface-hover: #242836;
-  --color-border: #2a2e3d;
-  --color-primary: #6c63ff;
-  --color-primary-hover: #7f78ff;
-  --color-primary-glow: rgba(108, 99, 255, 0.25);
-  --color-accent: #00d4aa;
-  --color-text: #e8e9ed;
-  --color-text-muted: #8b8fa3;
-  --color-danger: #ff4d6a;
-  --color-warning: #ffb84d;
-  --color-success: #00d4aa;
-  --radius: 12px;
-  --radius-sm: 8px;
+  /* Surface tokens from DESIGN.md */
+  --color-bg: #0b1326;
+  --color-surface: #171f33;
+  --color-surface-high: #222a3d;
+  --color-surface-bright: #31394d;
+
+  /* Accents */
+  --color-primary: #00e5ff;
+  --color-primary-glow: rgba(0, 229, 255, 0.25);
+  --color-secondary: #bb86fc;
+  --color-secondary-glow: rgba(187, 134, 252, 0.20);
+  --color-tertiary: #ffc76e;
+
+  /* Status */
+  --color-available: #00e5ff;
+  --color-pending: #bb86fc;
+  --color-sold: #64748b;
+
+  /* Text */
+  --color-text: #dae2fd;
+  --color-text-muted: #bac9cc;
+
+  /* Borders & outlines */
+  --color-border: rgba(255, 255, 255, 0.10);
+  --color-outline: #849396;
+  --color-outline-variant: #3b494c;
+
+  /* Error */
+  --color-error: #ffb4ab;
+
+  /* Spacing */
+  --spacing-unit: 8px;
+  --container-margin: 32px;
+  --gutter: 24px;
+  --card-padding: 24px;
+
+  /* Shape */
+  --radius-sm: 2px;
+  --radius: 4px;
+  --radius-md: 6px;
+  --radius-lg: 8px;
+  --radius-xl: 12px;
+
+  /* Typography */
   --font-sans: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
-  --font-mono: 'JetBrains Mono', 'Fira Code', monospace;
+
+  /* Transitions */
   --transition: 0.2s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
@@ -37,7 +72,7 @@ body {
   font-family: var(--font-sans);
   background-color: var(--color-bg);
   color: var(--color-text);
-  line-height: 1.6;
+  line-height: 1.5;
   min-height: 100vh;
 }
 
@@ -48,7 +83,8 @@ a {
 }
 
 a:hover {
-  color: var(--color-primary-hover);
+  color: var(--color-primary);
+  opacity: 0.85;
 }
 
 button {
@@ -67,4 +103,23 @@ input {
   min-height: 100vh;
   display: flex;
   flex-direction: column;
+}
+
+/* Scrollbar styling for dark theme */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--color-outline-variant);
+  border-radius: 3px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--color-outline);
 }

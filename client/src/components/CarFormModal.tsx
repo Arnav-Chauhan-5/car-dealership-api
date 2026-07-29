@@ -219,10 +219,6 @@ function CarFormModal({ open, onClose, onSubmit, car }: CarFormModalProps) {
             disabled={loading}
             sx={{
               minWidth: 100,
-              background: 'linear-gradient(135deg, #6c63ff 0%, #5a52d9 100%)',
-              '&:hover': {
-                background: 'linear-gradient(135deg, #7f78ff 0%, #6c63ff 100%)',
-              },
             }}
           >
             {loading ? (

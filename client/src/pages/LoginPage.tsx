@@ -52,7 +52,7 @@ function LoginPage() {
         display: 'flex',
         alignItems: 'center',
         justifyContent: 'center',
-        background: 'radial-gradient(ellipse at top, #1a1d2e 0%, #0f1117 70%)',
+        background: 'radial-gradient(ellipse at top, #171f33 0%, #0b1326 70%)',
         p: 2,
       }}
     >
@@ -63,7 +63,7 @@ function LoginPage() {
             maxWidth: 440,
             mx: 'auto',
             p: { xs: 2, sm: 3 },
-            boxShadow: '0 8px 40px rgba(0, 0, 0, 0.4)',
+            boxShadow: '0 8px 40px rgba(0, 0, 0, 0.30)',
           }}
         >
           <CardContent sx={{ p: { xs: 2, sm: 3 } }}>
@@ -74,13 +74,13 @@ function LoginPage() {
                   width: 64,
                   height: 64,
                   borderRadius: '16px',
-                  background: 'linear-gradient(135deg, #6c63ff 0%, #00d4aa 100%)',
+                  background: 'linear-gradient(135deg, #00e5ff 0%, #bb86fc 100%)',
                   display: 'flex',
                   alignItems: 'center',
                   justifyContent: 'center',
                   mx: 'auto',
                   mb: 2,
-                  boxShadow: '0 4px 20px rgba(108, 99, 255, 0.3)',
+                  boxShadow: '0 4px 20px rgba(0, 229, 255, 0.25)',
                 }}
               >
                 <DirectionsCarIcon sx={{ fontSize: 32, color: '#fff' }} />
@@ -88,7 +88,7 @@ function LoginPage() {
               <Typography
                 variant="h4"
                 sx={{
-                  background: 'linear-gradient(135deg, #6c63ff, #00d4aa)',
+                  background: 'linear-gradient(135deg, #00e5ff, #bb86fc)',
                   WebkitBackgroundClip: 'text',
                   WebkitTextFillColor: 'transparent',
                 }}
@@ -151,11 +151,6 @@ function LoginPage() {
                   mt: 3,
                   mb: 2,
                   py: 1.5,
-                  background: 'linear-gradient(135deg, #6c63ff 0%, #5a52d9 100%)',
-                  '&:hover': {
-                    background: 'linear-gradient(135deg, #7f78ff 0%, #6c63ff 100%)',
-                    boxShadow: '0 4px 20px rgba(108, 99, 255, 0.4)',
-                  },
                 }}
               >
                 {loading ? (
